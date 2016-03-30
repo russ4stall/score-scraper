@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Russ Forstall
@@ -30,11 +31,10 @@ public class NflScraper extends Scraper {
             e.printStackTrace();
         }
 
-        document.getElementsByClass("scorebox-wrapper");
-
-
-
-        return new ArrayList<>();
+        return document.getElementsByClass("scorebox-wrapper")
+                .stream()
+                .map(NflScraper::parseScore)
+                .collect(Collectors.toList());
     }
 
     public static Score parseScore(Element element) {
