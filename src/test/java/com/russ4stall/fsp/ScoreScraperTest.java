@@ -1,8 +1,14 @@
 package com.russ4stall.fsp;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,6 +35,31 @@ public class ScoreScraperTest {
         assertEquals(NflScraper.constructUrl(NflScraper.BASE_URL, 2014, 6), "http://www.nfl.com/scores/2014/REG6");
         assertEquals(NflScraper.constructUrl(NflScraper.BASE_URL, 2001, 15), "http://www.nfl.com/scores/2001/REG15");
         assertEquals(NflScraper.constructUrl(NflScraper.BASE_URL, 2045, 60), "http://www.nfl.com/scores/2045/REG60");
+    }
+
+    @Test
+    public void testParseScore() {
+        Score expectedScore = new Score();
+        expectedScore.setAwayTeam("Jaguars");
+        expectedScore.setHomeTeam("Colts");
+        expectedScore.setAwayTeamScore(22);
+        expectedScore.setHomeTeamScore(17);
+        expectedScore.setGameDate("Sun, Sep 23");
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("testParseScore.html").getFile());
+        assertNotNull(file);
+        Document doc = null;
+        try {
+            doc = Jsoup.parse(file, "UTF-8", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assertNotNull(doc);
+        Element element = doc.getElementsByClass(NflScraper.SCOREBOX_WRAPPER).first();
+
+        Score parsedScore = NflScraper.parseScore(element);
+        assertTrue(parsedScore.equals(expectedScore));
     }
 
     @Test
