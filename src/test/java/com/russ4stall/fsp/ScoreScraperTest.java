@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -19,7 +20,7 @@ public class ScoreScraperTest {
 
     @Test
     public void testNflConnect() {
-        assertTrue("Failed to connect to " + scraper.getUrl() , scraper.isAvailable());
+        assertTrue("Failed to connect to " + scraper.getUrl(), scraper.isAvailable());
     }
 
     @Test
@@ -39,8 +40,13 @@ public class ScoreScraperTest {
         eaglesScore.setHomeTeamScore(27);
         eaglesScore.setGameDate("Sun, Sep 23");
 
-        scraper.scrapeScores(2012, 3).stream().filter(score -> score.getAwayTeam().equals("Eagles")).forEach(score -> {
-            assertTrue(score.equals(eaglesScore));
-        });
+        Score scrapedEaglesScore =
+                scraper.scrapeScores(2012, 3)
+                        .stream()
+                        .filter(score -> score.getAwayTeam().equals("Eagles"))
+                        .findFirst()
+                        .get();
+
+        assertTrue(scrapedEaglesScore.equals(eaglesScore));
     }
 }
