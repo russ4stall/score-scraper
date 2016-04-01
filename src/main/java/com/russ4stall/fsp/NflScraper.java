@@ -36,7 +36,7 @@ public class NflScraper extends Scraper {
                 .collect(Collectors.toList());
     }
 
-    public static Score parseScore(Element element) {
+    protected static Score parseScore(Element element) {
         Score score = new Score();
         score.setGameDate(element.select(".date").text());
         score.setAwayTeam(element.select(".away-team .team-name").text());
